@@ -1,0 +1,299 @@
+:root {
+    --bg-pino: #091511;
+    --bg-pino-claro: #11261f;
+    --rojo-navidad: #dc2626;
+    --rojo-hover: #b91c1c;
+    --dorado: #f5c451;
+    --verde-spotify: #1db954;
+    --texto-blanco: #f8fafc;
+    --texto-suave: #cbd5e1;
+    --borde-cristal: rgba(245, 196, 81, 0.22);
+    --fondo-tarjeta: rgba(255, 255, 255, 0.06);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+[hidden] {
+    display: none !important;
+}
+
+body {
+    font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    background: radial-gradient(circle at top, #17362b 0%, var(--bg-pino) 65%);
+    color: var(--texto-blanco);
+    min-height: 100vh;
+    padding: 16px 14px 40px;
+    line-height: 1.45;
+}
+
+header, main {
+    max-width: 520px;
+    margin: 0 auto;
+}
+
+/* --- ENCABEZADO --- */
+header {
+    text-align: center;
+    padding: 12px 8px 20px;
+}
+
+header h1 {
+    font-size: 1.65rem;
+    font-weight: 800;
+    color: var(--dorado);
+    letter-spacing: -0.02em;
+    text-shadow: 0 2px 12px rgba(245, 196, 81, 0.25);
+}
+
+header p {
+    font-size: 0.92rem;
+    color: var(--texto-suave);
+    margin-top: 4px;
+}
+
+/* --- TARJETAS GENERALES --- */
+section {
+    background: var(--fondo-tarjeta);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid var(--borde-cristal);
+    border-radius: 18px;
+    padding: 16px;
+    margin-bottom: 18px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35);
+}
+
+section h2 {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--dorado);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* --- SECCIÓN 1: SONANDO AHORA --- */
+#info-sonando-actual {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: rgba(0, 0, 0, 0.28);
+    padding: 10px;
+    border-radius: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+#movil-portada-actual {
+    width: 72px;
+    height: 72px;
+    border-radius: 10px;
+    object-fit: cover;
+    flex-shrink: 0;
+    background: linear-gradient(135deg, #1e3a2f, #7f1d1d);
+    box-shadow: 0 4px 14px rgba(220, 38, 38, 0.35);
+}
+
+#movil-cancion-actual {
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--texto-blanco);
+}
+
+#movil-artista-actual {
+    font-size: 0.85rem;
+    color: var(--texto-suave);
+    margin-top: 2px;
+}
+
+#movil-pedida-por {
+    display: inline-block;
+    margin-top: 6px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--dorado);
+    background: rgba(245, 196, 81, 0.14);
+    padding: 2px 8px;
+    border-radius: 999px;
+}
+
+#movil-pedida-por:empty {
+    display: none;
+}
+
+/* --- SECCIÓN 2: FORMULARIO --- */
+.campo-grupo {
+    margin-bottom: 14px;
+}
+
+.campo-grupo label {
+    display: block;
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--texto-suave);
+    margin-bottom: 6px;
+}
+
+input[type="text"],
+textarea {
+    width: 100%;
+    background: rgba(9, 21, 17, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 12px;
+    padding: 12px 14px;
+    color: var(--texto-blanco);
+    font-size: 0.96rem;
+    font-family: inherit;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+input[type="text"]:focus,
+textarea:focus {
+    outline: none;
+    border-color: var(--dorado);
+    box-shadow: 0 0 0 3px rgba(245, 196, 81, 0.2);
+}
+
+.buscador-barra {
+    display: flex;
+    gap: 8px;
+}
+
+#btn-buscar {
+    background: linear-gradient(135deg, var(--rojo-navidad), #991b1b);
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    padding: 0 18px;
+    font-weight: 700;
+    font-size: 0.95rem;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: transform 0.15s, background 0.2s;
+}
+
+#btn-buscar:active {
+    transform: scale(0.97);
+}
+
+/* --- RESULTADOS DE BÚSQUEDA (Generados por cliente.js) --- */
+#resultados-busqueda {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 12px;
+}
+
+.resultado-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(0, 0, 0, 0.32);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 8px 10px;
+    border-radius: 12px;
+}
+
+.resultado-item img {
+    width: 50px;
+    height: 50px;
+    border-radius: 8px;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.resultado-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.resultado-info strong {
+    display: block;
+    font-size: 0.92rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.resultado-info span {
+    display: block;
+    font-size: 0.8rem;
+    color: var(--texto-suave);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.btn-elegir {
+    background: var(--verde-spotify);
+    color: #062110;
+    border: none;
+    border-radius: 999px;
+    padding: 8px 14px;
+    font-weight: 800;
+    font-size: 0.82rem;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+/* --- MENSAJE DE ESTADO / CONFIRMACIÓN --- */
+#mensaje-estado {
+    margin-top: 12px;
+    padding: 12px 14px;
+    border-radius: 12px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    background: rgba(245, 196, 81, 0.16);
+    border: 1px solid var(--dorado);
+    color: var(--dorado);
+}
+
+#mensaje-estado:empty {
+    display: none;
+}
+
+/* --- SECCIÓN 3: LISTA DE ESPERA --- */
+#lista-espera {
+    list-style: none;
+    counter-reset: cola-counter;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+#lista-espera li {
+    counter-increment: cola-counter;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: rgba(0, 0, 0, 0.25);
+    padding: 10px 12px;
+    border-radius: 12px;
+    border-left: 3px solid var(--rojo-navidad);
+}
+
+#lista-espera li::before {
+    content: counter(cola-counter);
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: var(--dorado);
+    color: #141414;
+    font-weight: 800;
+    font-size: 0.82rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.cola-vacia {
+    text-align: center;
+    color: var(--texto-suave);
+    font-size: 0.88rem;
+    padding: 10px 0;
+}

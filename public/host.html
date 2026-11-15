@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Host Control - Sonido CUBO</title>
+    <link rel="stylesheet" href="./host.css">
+</head>
+<body>
+
+    <header>
+        <h1>Panel Host - Sistema de Audio Navideño</h1>
+        <p>Estado de Spotify: <strong id="host-estado-auth">Verificando...</strong></p>
+    </header>
+
+    <main>
+        <!-- SECCIÓN 1: Autorización inicial (se oculta cuando ya iniciaste sesión) -->
+        <section id="host-seccion-login">
+            <p>Asegúrate de tener abierta la app de Spotify en esta laptop antes de conectar.</p>
+            <a href="/login" id="btn-login-spotify">Conectar cuenta de Spotify</a>
+        </section>
+
+        <!-- SECCIÓN 2: Controles de reproducción (se muestra al estar conectado) -->
+        <section id="host-seccion-controles" hidden>
+            <div class="botones-control">
+                <button type="button" id="btn-iniciar">Iniciar Música</button>
+                <button type="button" id="btn-siguiente">Saltar a Siguiente Canción</button>
+            </div>
+
+            <!-- Alertas del servidor (ej. si Spotify no está activo en la PC) -->
+            <div id="host-alerta-error" role="alert"></div>
+        </section>
+
+        <!-- SECCIÓN 3: Monitor en vivo de lo que suena en las bocinas -->
+        <section id="host-monitor">
+            <h2>Sonando en bocinas (<span id="host-modo-actual">Detenido</span>)</h2>
+            <div id="host-info-actual">
+                <img id="host-portada" src="" alt="Portada">
+                <div>
+                    <p id="host-cancion">Ninguna pista activa</p>
+                    <p id="host-artista"></p>
+                    <p id="host-detalle-usuario"></p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 4: Cola de peticiones en espera -->
+        <section id="host-cola-seccion">
+            <h2>Peticiones en cola (<span id="host-contador-cola">0</span>)</h2>
+            <ol id="host-lista-cola"></ol>
+        </section>
+    </main>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="./host.js"></script>
+</body>
+</html>

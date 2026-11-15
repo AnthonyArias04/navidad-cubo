@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ambiente Navideño - Pedir Canción</title>
+    <link rel="stylesheet" href="./index.css">
+</head>
+<body>
+
+    <header>
+        <h1>Pon tu ambiente navideño</h1>
+        <p>Elige una canción y dedícala en las pantallas del salón</p>
+    </header>
+
+    <main>
+        <!-- SECCIÓN 1: Qué está sonando ahora mismo -->
+        <section id="seccion-sonando">
+            <h2>Sonando ahora</h2>
+            <div id="info-sonando-actual">
+                <img id="movil-portada-actual" src="" alt="Portada actual">
+                <div>
+                    <p id="movil-cancion-actual">Cargando...</p>
+                    <p id="movil-artista-actual"></p>
+                    <small id="movil-pedida-por"></small>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 2: Formulario de solicitud -->
+        <section id="seccion-formulario">
+            <h2>Haz tu petición</h2>
+
+            <!-- Paso A: Datos del usuario -->
+            <div class="campo-grupo">
+                <label for="input-nombre">Tu nombre *</label>
+                <input type="text" id="input-nombre" maxlength="35" placeholder="Ej. Julio Arias" required>
+            </div>
+
+            <div class="campo-grupo">
+                <label for="input-nota">Nota o mensaje navideño (opcional)</label>
+                <textarea id="input-nota" maxlength="120" rows="2" placeholder="Ej. ¡Feliz Navidad a todos!"></textarea>
+            </div>
+
+            <!-- Paso B: Buscador de canciones en Spotify -->
+            <div class="campo-grupo">
+                <label for="input-busqueda">Busca tu canción *</label>
+                <div class="buscador-barra">
+                    <input type="text" id="input-busqueda" placeholder="Nombre de la canción o artista...">
+                    <button type="button" id="btn-buscar">Buscar</button>
+                </div>
+            </div>
+
+            <!-- Resultados de la búsqueda (se llena dinámicamente con JS) -->
+            <div id="resultados-busqueda"></div>
+
+            <!-- Mensaje de confirmación al enviar (ej. "Vas después de...") -->
+            <div id="mensaje-estado" role="alert"></div>
+        </section>
+
+        <!-- SECCIÓN 3: Lista de espera en tiempo real -->
+        <section id="seccion-cola">
+            <h2>Próximas canciones (<span id="contador-cola">0</span>)</h2>
+            <ol id="lista-espera">
+                <!-- Cada <li> mostrará: Posición, Canción, Artista y Nombre de quien la pidió -->
+            </ol>
+        </section>
+    </main>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="./index.js"></script>
+</body>
+</html>

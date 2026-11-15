@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pantalla Navideña - CUBO</title>
+    <link rel="stylesheet" href="./tv.css">
+</head>
+<body>
+
+    <main id="pantalla-tv">
+        <!-- BLOQUE SUPERIOR: Logo del lugar (siempre visible o destacado en modo ambiente) -->
+        <header id="tv-header">
+            <img id="tv-logo" src="./CuboSanLuisTalpa (1) (1) blanco (1).png" alt="Logo del lugar">
+        </header>
+
+        <!-- BLOQUE CENTRAL: Canción que está sonando (aplica para ambos modos) -->
+        <section id="tv-reproduccion">
+            <div id="tv-contenedor-portada">
+                <img id="tv-portada" src="" alt="Portada del álbum">
+            </div>
+
+            <div id="tv-info-pista">
+                <h1 id="tv-cancion">Esperando inicio de música...</h1>
+                <h2 id="tv-artista"></h2>
+            </div>
+        </section>
+
+        <!-- BLOQUE DINÁMICO A: Solo visible cuando hay una petición de usuario -->
+        <section id="tv-bloque-pedido" hidden>
+            <p class="etiqueta-pedido">Pedida por:</p>
+            <h3 id="tv-usuario"></h3>
+            <blockquote id="tv-nota"></blockquote>
+        </section>
+
+        <!-- BLOQUE DINÁMICO B: Solo visible en modo ambiente (mañana / sin peticiones) -->
+        <footer id="tv-bloque-ambiente">
+            <p id="tv-mensaje-navidad">Te deseamos una Feliz Navidad</p>
+        </footer>
+    </main>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="./tv.js"></script>
+</body>
+</html>
