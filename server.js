@@ -233,7 +233,7 @@ io.on('connection', (socket) => {
 // --- VIGILANTE AUTOMÁTICO DE PROGRESO (Cada 3 segundos) ---
 // Dentro del vigilante que revisa Spotify cada 4 segundos:
 setInterval(async () => {
-    if (!accessToken || pausadoManualmente) return;
+    if (!spotify.estaAutenticado() || pausadoManualmente) return;
     try {
         const estado = await spotify.obtenerEstado(accessToken);
         if (!estado) return;
