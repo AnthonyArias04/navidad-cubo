@@ -26,11 +26,19 @@ let cambiandoCancion = false;   // Candado para evitar saltos dobles en el monit
 
 // Reemplaza la función anterior soloRedLocal por esta:
 function verificarHost(req, res, next) {
-    const clave = req.headers['x-host-password'] || req.query.key;
-    if (clave !== process.env.HOST_PASSWORD) {
-        return res.status(403).send('Acceso denegado: contraseña de Host inválida.');
+    const claveUrl = req.headers['x-host-password'] || req.query.key;
+    const tieneCookieValida = req.headers.cookie?.includes(`host_key=${process.env.HOST_PASSWORD}`);
+
+    if (claveUrl === process.env.HOST_PASSWORD) {
+        res.setHeader('Set-Cookie', `host_key=${process.env.HOST_PASSWORD}; Path=/; HttpOnly; SameSite=Lax`);
+        return next();
     }
-    next();
+
+    if (tieneCookieValida) {
+        return next();
+    }
+
+    return res.status(403).send('Acceso denegado: contraseña de Host inválida.');
 }
 
 // Ruta ligera para evitar que el servidor gratuito se suspenda
@@ -58,6 +66,7 @@ app.get('/login', (req, res) => {
 });
 
 app.get('/callback', async (req, res) => {
+    res.redirect(`/host?key=${encodeURIComponent(process.env.HOST_PASSWORD)}`);
     const code = req.query.code;
     if (!code) return res.status(400).send('Falta el código de autorización.');
 
