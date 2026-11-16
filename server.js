@@ -60,20 +60,72 @@ app.get('/tv', (req, res) => {
 });
 
 
-// --- RUTAS DE AUTENTICACIÓN SPOTIFY (Solo se usan en la PC Host) ---
-app.get('/login', (req, res) => {
-    res.redirect(spotify.generarUrlLogin());
+// En tu ruta /login:
+app.get('/login', verificarHost, (req, res) => {
+    const params = new URLSearchParams({
+        response_type: 'code',
+        client_id: process.env.SPOTIFY_CLIENT_ID,
+        scope: [
+            'user-read-playback-state',
+            'user-modify-playback-state',
+            'user-read-currently-playing',
+            'playlist-read-private',
+            'playlist-read-collaborative'
+        ].join(' '),
+        redirect_uri: process.env.SPOTIFY_REDIRECT_URI,
+        show_dialog: 'true'
+    });
+
+    res.redirect(`https://accounts.spotify.com/authorize?${params.toString()}`);
 });
 
+// En tu ruta /callback:
 app.get('/callback', async (req, res) => {
-    try {
-        // ...tu código que intercambia el code por el token de Spotify
+    if (req.query.error) {
+        console.error('Spotify devolvió error en /callback:', req.query.error);
+        return res.status(400).send(`Error de Spotify: ${req.query.error}`);
+    }
 
+    const code = req.query.code;
+    if (!code) {
         return res.redirect(`/host?key=${encodeURIComponent(process.env.HOST_PASSWORD)}`);
-    } catch (error) {
-        console.error('Error en /callback:', error.message);
+    }
+
+    try {
+        const authHeader = Buffer.from(
+            `${process.env.SPOTIFY_CLIENT_ID}:${process.env.SPOTIFY_CLIENT_SECRET}`
+        ).toString('base64');
+
+        const respuesta = await fetch('https://accounts.spotify.com/api/token', {
+            method: 'POST',
+            headers: {
+                'Authorization': `Basic ${authHeader}`,
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: new URLSearchParams({
+                grant_type: 'authorization_code',
+                code: code,
+                redirect_uri: process.env.SPOTIFY_REDIRECT_URI
+            })
+        });
+
+        const data = await respuesta.json();
+
+        if (!respuesta.ok || !data.access_token) {
+            console.error('Fallo al canjear token de Spotify:', data);
+            return res.status(400).send(`Error al obtener token: ${JSON.stringify(data)}`);
+        }
+
+        // Guarda el token en la variable global que usa el resto de tu server.js
+        accessToken = data.access_token;
+        if (data.refresh_token) refreshToken = data.refresh_token;
+
+        console.log('Spotify conectado correctamente. Token guardado.');
+        return res.redirect(`/host?key=${encodeURIComponent(process.env.HOST_PASSWORD)}`);
+    } catch (err) {
+        console.error('Excepción en /callback:', err.message);
         if (!res.headersSent) {
-            return res.status(500).send('Error al autenticar con Spotify');
+            return res.status(500).send('Error interno conectando con Spotify');
         }
     }
 });
