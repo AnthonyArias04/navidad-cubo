@@ -66,20 +66,17 @@ app.get('/login', (req, res) => {
 });
 
 app.get('/callback', async (req, res) => {
-    res.redirect(`/host?key=${encodeURIComponent(process.env.HOST_PASSWORD)}`);
-    const code = req.query.code;
-    if (!code) return res.status(400).send('Falta el código de autorización.');
-
     try {
-        await spotify.intercambiarCodigo(code);
-        await cargarMusicaAmbiente();
-        res.redirect('/host');
+        // ...tu código que intercambia el code por el token de Spotify
+
+        return res.redirect(`/host?key=${encodeURIComponent(process.env.HOST_PASSWORD)}`);
     } catch (error) {
         console.error('Error en /callback:', error.message);
-        res.status(500).send('Error al conectar con Spotify: ' + error.message);
+        if (!res.headersSent) {
+            return res.status(500).send('Error al autenticar con Spotify');
+        }
     }
 });
-
 // --- API REST PARA BÚSQUEDA Y ESTADO ---
 app.get('/api/buscar', async (req, res) => {
     const q = (req.query.q || '').trim();
@@ -227,16 +224,8 @@ io.on('connection', (socket) => {
         }
     });
 
-    // Controles manuales desde la vista /host
-    socket.on('host_iniciar', async () => {
-    if (!esConexionLocal) return;
-    await reproducirSiguiente();
-    });
 
-    socket.on('host_siguiente', async () => {
-    if (!esConexionLocal) return;
-    await reproducirSiguiente();
-    });
+    
 });
 
 // --- VIGILANTE AUTOMÁTICO DE PROGRESO (Cada 3 segundos) ---
