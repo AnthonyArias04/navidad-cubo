@@ -18,7 +18,8 @@ function generarUrlLogin() {
         client_id: CLIENT_ID,
         response_type: 'code',
         redirect_uri: REDIRECT_URI,
-        scope: 'user-modify-playback-state user-read-playback-state playlist-read-private playlist-read-collaborative'
+        show_dialog: 'true',
+        scope: 'user-modify-playback-state user-read-playback-state user-read-currently-playing playlist-read-private playlist-read-collaborative'
     });
     return `https://accounts.spotify.com/authorize?${params.toString()}`;
 }
@@ -42,12 +43,12 @@ async function intercambiarCodigo(code) {
     });
 
     const data = await res.json();
-    if (!res.ok) {
+    if (!res.ok || !data.access_token) {
         throw new Error(`Error al obtener token: ${JSON.stringify(data)}`);
     }
 
     accessToken = data.access_token;
-    refreshToken = data.refresh_token;
+    if (data.refresh_token) refreshToken = data.refresh_token;
     tokenExpiraEn = Date.now() + (data.expires_in * 1000);
 }
 
@@ -118,10 +119,13 @@ async function buscarCanciones(consulta) {
     return data.tracks.items.map(formatearCancion);
 }
 
-// 5. Descarga las canciones de una playlist navideña para el modo ambiente de la mañana
+// 5. Descarga las canciones de una playlist navideña para el modo ambiente
 async function cargarPlaylistNavidena(playlistId) {
     const token = await obtenerTokenValido();
-    const res = await fetch(`https://api.spotify.com/v1/playlists/${playlistId}/tracks?limit=50`, {
+    // Limpia el ID por si la variable de entorno tiene la URL completa o ?si=...
+    const idLimpio = playlistId.replace(/^.*playlist\//, '').split('?')[0].trim();
+
+    const res = await fetch(`https://api.spotify.com/v1/playlists/${idLimpio}/tracks?limit=50`, {
         headers: { 'Authorization': `Bearer ${token}` }
     });
 
@@ -139,7 +143,6 @@ async function cargarPlaylistNavidena(playlistId) {
 async function reproducirCancion(uri) {
     const token = await obtenerTokenValido();
 
-    // 1. Detecta el dispositivo activo en la laptop (evita confundirlo con pestañas web)
     const resDisp = await fetch('https://api.spotify.com/v1/me/player/devices', {
         headers: { 'Authorization': `Bearer ${token}` }
     });
@@ -163,7 +166,6 @@ async function reproducirCancion(uri) {
         throw new Error('No se detectó la app de Spotify abierta en esta laptop. Ábrela y dale Play 1 segundo.');
     }
 
-    // 2. Pausa la reproducción actual para evitar que Spotify Desktop ignore el nuevo URI
     await fetch(`https://api.spotify.com/v1/me/player/pause?device_id=${deviceId}`, {
         method: 'PUT',
         headers: { 'Authorization': `Bearer ${token}` }
@@ -171,7 +173,6 @@ async function reproducirCancion(uri) {
 
     await new Promise(resolve => setTimeout(resolve, 250));
 
-    // 3. Envía la nueva canción desde el segundo 0
     const res = await fetch(`https://api.spotify.com/v1/me/player/play?device_id=${deviceId}`, {
         method: 'PUT',
         headers: {
@@ -189,7 +190,6 @@ async function reproducirCancion(uri) {
         throw new Error(`Error al reproducir (${res.status}): ${JSON.stringify(data)}`);
     }
 
-    // 4. Respaldo automático: si Spotify Desktop mantuvo la pista anterior, la fuerza vía cola + next
     await new Promise(resolve => setTimeout(resolve, 450));
     const estado = await obtenerEstadoReproductor();
     if (estado && estado.item && estado.item.uri !== uri) {
@@ -206,6 +206,7 @@ async function reproducirCancion(uri) {
 
     return true;
 }
+
 // 7. Consulta el progreso actual para saber cuándo terminó la pista
 async function obtenerEstadoReproductor() {
     const token = await obtenerTokenValido();
