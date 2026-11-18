@@ -126,8 +126,8 @@ async function cargarMusicaAmbiente() {
     }
 
     if (cancionesAmbiente.length === 0) {
-        const b1 = await spotify.buscarCanciones('villancicos navidad');
-        const b2 = await spotify.buscarCanciones('christmas classics');
+        const b1 = await spotify.buscarCanciones('Cumbias navidadeñas');
+        const b2 = await spotify.buscarCanciones('Pop Navidad');
         cancionesAmbiente = [...b1, ...b2];
     }
     console.log(`Música de ambiente cargada: ${cancionesAmbiente.length} pistas listas.`);
